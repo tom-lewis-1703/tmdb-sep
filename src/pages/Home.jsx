@@ -44,12 +44,15 @@ function Home() {
   return (
     <div>
       <form className="search-bar" onSubmit={handleSearch}>
-        <input
-          type="text"
-          placeholder="Search for a movie..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+        <div className="search-input-wrapper">
+          <span className="search-icon">⌕</span>
+          <input
+            type="text"
+            placeholder="Search films..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
         <button type="submit">Search</button>
         {isSearching && (
           <button type="button" className="clear-btn" onClick={clearSearch}>
@@ -58,7 +61,10 @@ function Home() {
         )}
       </form>
 
-      <h2>{isSearching ? `Results for "${searchQuery}"` : 'Popular Movies'}</h2>
+      <div className="section-header">
+        <h2>{isSearching ? `Results for "${searchQuery}"` : 'Now Showing'}</h2>
+        <div className="header-line" />
+      </div>
 
       {loading ? (
         <div className="movie-grid">
@@ -73,7 +79,7 @@ function Home() {
           ))}
         </div>
       ) : movies.length === 0 ? (
-        <p className="no-results">No movies found.</p>
+        <p className="no-results">No films found.</p>
       ) : (
         <div className="movie-grid">
           {movies.map((movie) => (
@@ -85,15 +91,18 @@ function Home() {
                     alt={movie.title}
                   />
                 ) : (
-                  <span>No Image</span>
+                  <div className="no-poster">No Poster</div>
                 )}
+                <div className="poster-overlay">
+                  <span className="play-btn">▶</span>
+                </div>
+                <div className="rating-badge">
+                  {movie.vote_average?.toFixed(1)}
+                </div>
               </div>
               <div className="movie-info">
                 <h3>{movie.title}</h3>
-                <div className="movie-meta">
-                  <span>{movie.release_date?.slice(0, 4) || '----'}</span>
-                  <span>⭐ {movie.vote_average?.toFixed(1)}</span>
-                </div>
+                <span className="movie-year">{movie.release_date?.slice(0, 4) || '—'}</span>
               </div>
             </Link>
           ))}

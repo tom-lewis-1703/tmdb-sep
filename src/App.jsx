@@ -7,9 +7,12 @@ function App() {
   return (
     <BrowserRouter>
       <header className="navbar">
-        <Link to="/"><h1>TMDB</h1></Link>
+        <Link to="/" className="navbar-brand">
+          <span className="brand-icon">▶</span>
+          <h1>CINEMATE</h1>
+        </Link>
         <nav>
-          <Link to="/">Home</Link>
+          <Link to="/">Discover</Link>
         </nav>
       </header>
       <main className="main-content">
@@ -18,6 +21,9 @@ function App() {
           <Route path="/movie/:id" element={<MovieDetail />} />
         </Routes>
       </main>
+      <footer className="site-footer">
+        <p>Powered by TMDB API</p>
+      </footer>
     </BrowserRouter>
   )
 }

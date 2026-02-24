@@ -19,7 +19,9 @@ function MovieDetail() {
   if (loading) {
     return (
       <div className="movie-detail">
-        <div className="detail-loading">Loading...</div>
+        <div className="detail-loading">
+          <div className="loading-spinner" />
+        </div>
       </div>
     )
   }
@@ -27,7 +29,7 @@ function MovieDetail() {
   if (!movie) {
     return (
       <div className="movie-detail">
-        <p>Movie not found.</p>
+        <p>Film not found.</p>
       </div>
     )
   }
@@ -40,95 +42,117 @@ function MovieDetail() {
   const backdropUrl = getImageUrl(movie.backdrop_path, 'original')
   const posterUrl = getImageUrl(movie.poster_path, 'w500')
 
+  const hours = Math.floor(movie.runtime / 60)
+  const mins = movie.runtime % 60
+  const runtimeStr = movie.runtime > 0 ? `${hours}h ${mins}m` : null
+
   return (
     <div className="movie-detail">
+      {/* Hero backdrop */}
       {backdropUrl && (
-        <div
-          className="detail-backdrop"
-          style={{ backgroundImage: `url(${backdropUrl})` }}
-        />
+        <div className="detail-hero">
+          <img src={backdropUrl} alt="" className="hero-image" />
+          <div className="hero-fade" />
+        </div>
       )}
 
-      <Link to="/" className="back-link">&larr; Back to Home</Link>
+      <div className="detail-content">
+        <Link to="/" className="back-link">← Back</Link>
 
-      <div className="detail-layout">
-        <div className="detail-poster">
-          {posterUrl ? (
-            <img src={posterUrl} alt={movie.title} />
-          ) : (
-            <span>No Image</span>
-          )}
-        </div>
-
-        <div className="detail-info">
-          <h2>{movie.title}</h2>
-          {movie.tagline && <p className="detail-tagline">{movie.tagline}</p>}
-
-          <div className="detail-stats">
-            <span>⭐ {movie.vote_average?.toFixed(1)} / 10</span>
-            <span>📅 {movie.release_date?.slice(0, 4)}</span>
-            {movie.runtime > 0 && <span>⏱ {movie.runtime} min</span>}
+        <div className="detail-layout">
+          <div className="detail-poster">
+            {posterUrl ? (
+              <img src={posterUrl} alt={movie.title} />
+            ) : (
+              <div className="no-poster-detail">No Poster</div>
+            )}
           </div>
 
-          {movie.genres?.length > 0 && (
-            <div className="detail-genres">
-              {movie.genres.map((g) => (
-                <span key={g.id} className="genre-tag">{g.name}</span>
+          <div className="detail-info">
+            <div className="detail-meta-top">
+              {movie.release_date && (
+                <span className="meta-tag">{movie.release_date.slice(0, 4)}</span>
+              )}
+              {runtimeStr && <span className="meta-tag">{runtimeStr}</span>}
+              {movie.vote_average > 0 && (
+                <span className="meta-tag gold">★ {movie.vote_average.toFixed(1)}</span>
+              )}
+            </div>
+
+            <h2>{movie.title}</h2>
+            {movie.tagline && <p className="detail-tagline">{movie.tagline}</p>}
+
+            {movie.genres?.length > 0 && (
+              <div className="detail-genres">
+                {movie.genres.map((g) => (
+                  <span key={g.id} className="genre-tag">{g.name}</span>
+                ))}
+              </div>
+            )}
+
+            {directors.length > 0 && (
+              <div className="detail-director">
+                <span className="director-label">Directed by</span>
+                <span className="director-name">{directors.map((d) => d.name).join(', ')}</span>
+              </div>
+            )}
+
+            {movie.overview && (
+              <div className="detail-overview-section">
+                <h3>Storyline</h3>
+                <p className="detail-overview">{movie.overview}</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Cast */}
+        {cast.length > 0 && (
+          <div className="detail-section">
+            <div className="section-header">
+              <h3>Top Cast</h3>
+              <div className="header-line" />
+            </div>
+            <div className="cast-scroll">
+              {cast.map((person) => (
+                <div key={person.credit_id} className="cast-card">
+                  <div className="cast-photo">
+                    {person.profile_path ? (
+                      <img
+                        src={getImageUrl(person.profile_path, 'w185')}
+                        alt={person.name}
+                      />
+                    ) : (
+                      <div className="cast-placeholder">
+                        <span>{person.name.charAt(0)}</span>
+                      </div>
+                    )}
+                  </div>
+                  <p className="cast-name">{person.name}</p>
+                  <p className="cast-character">{person.character}</p>
+                </div>
               ))}
             </div>
-          )}
+          </div>
+        )}
 
-          {directors.length > 0 && (
-            <p className="detail-director">
-              Directed by {directors.map((d) => d.name).join(', ')}
-            </p>
-          )}
-
-          {movie.overview && (
-            <>
-              <h3>Overview</h3>
-              <p className="detail-overview">{movie.overview}</p>
-            </>
-          )}
-        </div>
+        {/* Trailer */}
+        {trailer && (
+          <div className="detail-section">
+            <div className="section-header">
+              <h3>Official Trailer</h3>
+              <div className="header-line" />
+            </div>
+            <div className="trailer-container">
+              <iframe
+                src={`https://www.youtube.com/embed/${trailer.key}`}
+                title={trailer.name}
+                allowFullScreen
+              />
+            </div>
+          </div>
+        )}
       </div>
-
-      {cast.length > 0 && (
-        <div className="detail-cast">
-          <h3>Cast</h3>
-          <div className="cast-grid">
-            {cast.map((person) => (
-              <div key={person.credit_id} className="cast-card">
-                <div className="cast-photo">
-                  {person.profile_path ? (
-                    <img
-                      src={getImageUrl(person.profile_path, 'w185')}
-                      alt={person.name}
-                    />
-                  ) : (
-                    <span>?</span>
-                  )}
-                </div>
-                <p className="cast-name">{person.name}</p>
-                <p className="cast-character">{person.character}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {trailer && (
-        <div className="detail-trailer">
-          <h3>Trailer</h3>
-          <div className="trailer-wrapper">
-            <iframe
-              src={`https://www.youtube.com/embed/${trailer.key}`}
-              title={trailer.name}
-              allowFullScreen
-            />
-          </div>
-        </div>
-      )}
     </div>
   )
 }
