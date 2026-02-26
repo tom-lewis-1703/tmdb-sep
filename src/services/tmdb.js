@@ -27,6 +27,30 @@ export async function searchMovies(query, page = 1) {
   return fetchTmdb('/search/movie', { query, page })
 }
 
+export async function getTrendingMovies() {
+  return fetchTmdb('/trending/movie/week')
+}
+
+export async function getTopRatedMovies(page = 1) {
+  return fetchTmdb('/movie/top_rated', { page })
+}
+
+export async function getNowPlayingMovies(page = 1) {
+  return fetchTmdb('/movie/now_playing', { page })
+}
+
+export async function getUpcomingMovies(page = 1) {
+  return fetchTmdb('/movie/upcoming', { page })
+}
+
 export async function getMovieDetails(id) {
-  return fetchTmdb(`/movie/${id}`, { append_to_response: 'credits,videos' })
+  return fetchTmdb(`/movie/${id}`, { append_to_response: 'credits,videos,similar' })
+}
+
+export async function searchPeople(query, page = 1) {
+  return fetchTmdb('/search/person', { query, page })
+}
+
+export async function getPersonDetails(id) {
+  return fetchTmdb(`/person/${id}`, { append_to_response: 'movie_credits,images' })
 }

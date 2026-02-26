@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { getMovieDetails, getImageUrl } from '../services/tmdb'
 import './MovieDetail.css'
 
 function MovieDetail() {
   const { id } = useParams()
+  const navigate = useNavigate()
   const [movie, setMovie] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -39,6 +40,7 @@ function MovieDetail() {
   )
   const cast = movie.credits?.cast?.slice(0, 10) || []
   const directors = movie.credits?.crew?.filter((c) => c.job === 'Director') || []
+  const similarMovies = movie.similar?.results?.filter((m) => m.poster_path)?.slice(0, 8) || []
   const backdropUrl = getImageUrl(movie.backdrop_path, 'original')
   const posterUrl = getImageUrl(movie.poster_path, 'w500')
 
@@ -93,7 +95,14 @@ function MovieDetail() {
             {directors.length > 0 && (
               <div className="detail-director">
                 <span className="director-label">Directed by</span>
-                <span className="director-name">{directors.map((d) => d.name).join(', ')}</span>
+                <span className="director-name">
+                  {directors.map((d, i) => (
+                    <span key={d.credit_id}>
+                      <Link to={`/person/${d.id}`} className="director-link">{d.name}</Link>
+                      {i < directors.length - 1 && ', '}
+                    </span>
+                  ))}
+                </span>
               </div>
             )}
 
@@ -115,7 +124,7 @@ function MovieDetail() {
             </div>
             <div className="cast-scroll">
               {cast.map((person) => (
-                <div key={person.credit_id} className="cast-card">
+                <Link to={`/person/${person.id}`} key={person.credit_id} className="cast-card">
                   <div className="cast-photo">
                     {person.profile_path ? (
                       <img
@@ -130,7 +139,7 @@ function MovieDetail() {
                   </div>
                   <p className="cast-name">{person.name}</p>
                   <p className="cast-character">{person.character}</p>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -149,6 +158,36 @@ function MovieDetail() {
                 title={trailer.name}
                 allowFullScreen
               />
+            </div>
+          </div>
+        )}
+
+        {/* Similar Movies */}
+        {similarMovies.length > 0 && (
+          <div className="detail-section">
+            <div className="section-header">
+              <h3>You Might Also Like</h3>
+              <div className="header-line" />
+            </div>
+            <div className="similar-scroll">
+              {similarMovies.map((sim) => (
+                <Link to={`/movie/${sim.id}`} key={sim.id} className="similar-card">
+                  <div className="similar-poster">
+                    <img
+                      src={getImageUrl(sim.poster_path, 'w342')}
+                      alt={sim.title}
+                      loading="lazy"
+                    />
+                    <div className="similar-overlay">
+                      {sim.vote_average > 0 && (
+                        <span className="similar-rating">★ {sim.vote_average.toFixed(1)}</span>
+                      )}
+                    </div>
+                  </div>
+                  <p className="similar-title">{sim.title}</p>
+                  <span className="similar-year">{sim.release_date?.slice(0, 4) || '—'}</span>
+                </Link>
+              ))}
             </div>
           </div>
         )}

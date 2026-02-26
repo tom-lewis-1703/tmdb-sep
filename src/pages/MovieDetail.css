@@ -179,6 +179,17 @@
   font-weight: 500;
 }
 
+.director-link {
+  color: #d4a847;
+  transition: color 0.2s;
+}
+
+.director-link:hover {
+  color: #e6bc5a;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .detail-overview-section h3 {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 1.3rem;
@@ -246,6 +257,10 @@
   border-color: #d4a847;
 }
 
+.cast-card:hover .cast-name {
+  color: #d4a847;
+}
+
 .cast-photo img {
   width: 100%;
   height: 100%;
@@ -292,6 +307,84 @@
   width: 100%;
   height: 100%;
   border: none;
+}
+
+/* Similar Movies */
+.similar-scroll {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  padding-bottom: 0.75rem;
+}
+
+.similar-card {
+  min-width: 150px;
+  max-width: 150px;
+  flex-shrink: 0;
+  transition: transform 0.3s;
+}
+
+.similar-card:hover {
+  transform: translateY(-4px);
+}
+
+.similar-poster {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2/3;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+  background-color: #141418;
+}
+
+.similar-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s;
+}
+
+.similar-card:hover .similar-poster img {
+  transform: scale(1.05);
+}
+
+.similar-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  display: flex;
+  align-items: flex-end;
+  padding: 0.6rem;
+}
+
+.similar-card:hover .similar-overlay {
+  opacity: 1;
+}
+
+.similar-rating {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #d4a847;
+}
+
+.similar-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #e8e6e3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0.15rem;
+}
+
+.similar-year {
+  font-size: 0.65rem;
+  color: #666;
+  letter-spacing: 0.05em;
 }
 
 @media (max-width: 768px) {
